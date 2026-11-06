@@ -8,7 +8,7 @@
 <meta property="og:title" content="Estação Órion · Posto de Vigilância de IA">
 <meta property="og:description" content="Três setores, três regras de ouro. Proteja os dados e acenda as Três Marias.">
 <meta name="theme-color" content="#04060c">
-<meta name="orion-version" content="v5">
+<meta name="orion-version" content="v6">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2304060c'/%3E%3Cg fill='%23ffc63d'%3E%3Cpath d='M14 40l6-6 6 6-6 6z'/%3E%3Cpath d='M26 32l6-6 6 6-6 6z'/%3E%3Cpath d='M38 24l6-6 6 6-6 6z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,8 +41,8 @@ a{color:var(--cyan)}
     radial-gradient(1px 1px at 35% 85%, #fff, transparent),
     radial-gradient(1px 1px at 90% 60%, #bdf, transparent),
     var(--void)}
-.fx-scan{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.07;
-  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.5) 0 1px, transparent 1px 3px);mix-blend-mode:overlay}
+.fx-scan{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.035;
+  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.5) 0 1px, transparent 1px 3px)}
 .fx-vignette{position:fixed;inset:0;z-index:41;pointer-events:none;
   background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.65) 100%)}
 #flash{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;
@@ -87,7 +87,7 @@ body.glitch #stage, body.glitch #hud{animation:glitch .45s steps(2) 1}
 #stage{position:fixed;inset:58px 0 0 0;z-index:20;pointer-events:none}
 #stage > *{pointer-events:auto}
 .panel{position:absolute;left:40px;top:26px;width:min(580px,46vw);max-height:calc(100vh - 58px - 52px);overflow-y:auto;
-  background:var(--glass);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);
+  background:rgba(7,11,24,.9);
   border:1px solid var(--line);padding:26px 28px 24px;
   clip-path:polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
   animation:panelIn .55s cubic-bezier(.2,.8,.2,1)}
@@ -298,7 +298,7 @@ p + p{margin-top:10px}
 .final-foot .egg{color:#3d4763}
 
 /* ---------- modais ---------- */
-.modal{position:fixed;inset:0;z-index:80;background:rgba(2,4,10,.72);backdrop-filter:blur(6px);display:grid;place-items:center;animation:fadeIn .25s}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(2,4,10,.86);display:grid;place-items:center;animation:fadeIn .25s}
 .modal.hidden{display:none}
 .modal-box{width:min(1040px,92vw);max-height:86vh;overflow-y:auto;background:#070b17;border:1px solid var(--line2);padding:28px;position:relative;
   clip-path:polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))}
@@ -316,8 +316,8 @@ p + p{margin-top:10px}
 .arch.locked h4{color:var(--faint)}
 .radio-box{width:min(720px,92vw)}
 .radio-wave{display:flex;gap:3px;align-items:flex-end;height:40px;margin:16px 0}
-.radio-wave i{flex:1;background:var(--amber);opacity:.7;animation:wave 1.1s ease-in-out infinite}
-@keyframes wave{0%,100%{height:15%}50%{height:100%}}
+.radio-wave i{flex:1;height:100%;background:var(--amber);opacity:.7;transform-origin:bottom;animation:wave 1.1s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:scaleY(.15)}50%{transform:scaleY(1)}}
 .yt{position:relative;padding-top:56.25%;margin-top:14px;border:1px solid var(--line2)}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
@@ -511,11 +511,11 @@ p + p{margin-top:10px}
       <div class="nerd-grid">
         <div class="nerd-card"><h4>Cenário</h4><ul>
           <li>Estação montada só com primitivas: toros, cilindros e um <code>InstancedMesh</code> com 72 janelas</li>
-          <li>Planeta com shader próprio: continentes por ruído fractal (fbm), luzes de cidade só no lado noturno e atmosfera por efeito Fresnel</li>
-          <li>Nebulosa pintada em shader numa esfera invertida e 7.000 estrelas em <code>Points</code> com cintilação na GPU</li>
+          <li>Planeta com shader próprio: continentes e cidades por ruído fractal (fbm), pré-calculados numa textura, luzes só no lado noturno e atmosfera por efeito Fresnel</li>
+          <li>Nebulosa pintada em shader uma única vez num cubemap e 7.000 estrelas em <code>Points</code> com cintilação na GPU</li>
           <li>Constelação de Órion com as 8 estrelas principais nas posições aproximadas do céu real</li></ul></div>
         <div class="nerd-card"><h4>Câmera e interação</h4><ul>
-          <li>Pós-processamento com <code>UnrealBloomPass</code> e tone mapping ACES</li>
+          <li>Pós-processamento com <code>UnrealBloomPass</code> e tone mapping ACES, com qualidade adaptativa: se a máquina passar de ~26 ms por quadro, o bloom desliga e a resolução cai</li>
           <li>Reflexos metálicos com um ambiente PMREM gerado em código</li>
           <li><code>setViewOffset</code> desloca a cena para a direita do painel sem mexer na câmera</li>
           <li>A mira de caça é HTML projetado do 3D a cada frame com <code>Vector3.project()</code></li>
@@ -551,7 +551,7 @@ p + p{margin-top:10px}
         <div><b>v1</b><span>Três setores, 3D, trilha, Arquivo e card</span></div>
         <div><b>Teste real</b><span>Feedback de contraste e legibilidade</span></div>
         <div><b>v2</b><span>Mira de caça, câmera nova e mais contraste</span></div>
-        <div><b>v3 · v4</b><span>Vocabulário mais natural, este log e mixagem sem distorção</span></div>
+        <div><b>v3 a v6</b><span>Vocabulário, este log, mixagem sem distorção e 3D mais leve</span></div>
       </div>
     </section>
 
@@ -1278,11 +1278,18 @@ window.ORION_DATA = {
       ln.innerHTML = `<span class="who">${esc(line.who || 'MESTRE-JEDAI ›')}</span><span class="tx"></span><span class="cur"></span>`;
       container.appendChild(ln);
       const tx = ln.querySelector('.tx');
-      for (let i = 0; i < line.text.length; i++) {
-        if (skip) { tx.textContent = line.text; break; }
-        tx.textContent += line.text[i];
-        if (i % 3 === 0) sfx('type');
-        await sleep(line.text[i] === '.' ? 120 : 16);
+      // digitação por tempo (não por quadro): mantém o ritmo mesmo se o computador engasgar
+      const CPS = 55, t0 = performance.now();
+      let shown = 0;
+      while (shown < line.text.length) {
+        if (skip) { shown = line.text.length; }
+        else {
+          const target = Math.min(line.text.length, Math.floor((performance.now() - t0) / 1000 * CPS) + 1);
+          if (target > shown && (target >> 2) !== (shown >> 2)) sfx('type');
+          shown = target;
+        }
+        tx.textContent = line.text.slice(0, shown);
+        if (shown < line.text.length) await sleep(25);
       }
       ln.querySelector('.cur').remove();
       if (!skip) await sleep(260);
@@ -1741,7 +1748,8 @@ window.ORION_DATA = {
     el.scrollTo({ top: 0 });
     fx('coreSpeak', true);
     const ask = $('#ask', el);
-    for (let k = 0; k < dc.ask.length; k++) { ask.textContent += dc.ask[k]; if (k % 3 === 0) sfx('type'); await sleep(18); }
+    { const t0 = performance.now(); let n = 0;
+      while (n < dc.ask.length) { n = Math.min(dc.ask.length, Math.floor((performance.now() - t0) / 1000 * 55) + 1); ask.textContent = dc.ask.slice(0, n); if (n % 4 === 0) sfx('type'); if (n < dc.ask.length) await sleep(25); } }
     $('#opts', el).style.opacity = 1;
     await new Promise((resolve) => {
       $$('.choice', el).forEach((b) => b.addEventListener('click', () => {
@@ -1991,8 +1999,11 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const canvas = document.getElementById('scene');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-const PR = Math.min(window.devicePixelRatio || 1, 1.5);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+// qualidade: 2 = completa, 1 = sem bloom, 0 = sem bloom e resolução reduzida (adaptativa, ou forçada com ?leve)
+const LITE = /[?&]leve\b/.test(location.search);
+let quality = LITE ? 0 : 2;
+const PR = LITE ? 0.75 : Math.min(window.devicePixelRatio || 1, 1);
 renderer.setPixelRatio(PR);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x04060c, 1);
@@ -2113,9 +2124,16 @@ const nebulaMat = new THREE.ShaderMaterial({
   }`,
   side: THREE.BackSide, depthWrite: false
 });
-const nebula = new THREE.Mesh(new THREE.SphereGeometry(2600, 48, 24), nebulaMat);
-nebula.renderOrder = -2;
-scene.add(nebula);
+// a nebulosa é desenhada UMA vez num cubemap e vira fundo da cena (antes era recalculada a cada frame)
+(function bakeNebula() {
+  const nebScene = new THREE.Scene();
+  nebScene.add(new THREE.Mesh(new THREE.SphereGeometry(100, 48, 24), nebulaMat));
+  const rt = new THREE.WebGLCubeRenderTarget(768, { type: THREE.HalfFloatType, generateMipmaps: false });
+  const cc = new THREE.CubeCamera(1, 1000, rt);
+  cc.update(renderer, nebScene);
+  scene.background = rt.texture;
+  nebulaMat.dispose();
+})();
 
 function makeStars(count, rMin, rMax) {
   const pos = new Float32Array(count * 3), col = new Float32Array(count * 3), size = new Float32Array(count), ph = new Float32Array(count);
@@ -2163,32 +2181,52 @@ scene.add(rimLight);
 
 /* ---------- planeta com luzes de cidade ---------- */
 const PLANET_POS = new THREE.Vector3(-260, -120, -380);
+// relevo, luzes de cidade, nuvens e malha urbana são calculados UMA vez numa textura
+const planetMasks = (function bakePlanet() {
+  const rt = new THREE.WebGLRenderTarget(2048, 1024, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter, magFilter: THREE.LinearFilter });
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+    fragmentShader: `varying vec2 vUv; ${GLSL_NOISE}
+      void main(){
+        float phi = vUv.x * 6.2831853; float theta = (1.0 - vUv.y) * 3.1415926;
+        vec3 p = vec3(-cos(phi)*sin(theta), cos(theta), sin(phi)*sin(theta));
+        float land = smoothstep(0.47, 0.55, fbm(p*2.3));
+        float city = smoothstep(0.6, 0.76, fbm(p*13.0 + 3.1)) * land;
+        float clouds = smoothstep(0.55, 0.8, fbm(p*4.0));
+        float grid = smoothstep(0.5, 0.9, noise(p*95.0));
+        float tint = step(0.62, noise(p*6.0));
+        gl_FragColor = vec4(land, city * (0.4 + grid), clouds, tint);
+      }`,
+    depthTest: false, depthWrite: false
+  });
+  const q = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat); q.frustumCulled = false;
+  const sc = new THREE.Scene(); sc.add(q);
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  renderer.setRenderTarget(rt); renderer.render(sc, cam); renderer.setRenderTarget(null);
+  q.geometry.dispose(); mat.dispose();
+  return rt.texture;
+})();
 const planetMat = new THREE.ShaderMaterial({
-  uniforms: { uSun: { value: SUN }, uTime: { value: 0 } },
-  vertexShader: `varying vec3 vN; varying vec3 vW; varying vec3 vP;
-    void main(){ vP = position; vN = normalize(mat3(modelMatrix)*normal); vec4 w = modelMatrix*vec4(position,1.0); vW = w.xyz;
+  uniforms: { uSun: { value: SUN }, uMasks: { value: planetMasks } },
+  vertexShader: `varying vec3 vN; varying vec3 vW; varying vec2 vUv;
+    void main(){ vUv = uv; vN = normalize(mat3(modelMatrix)*normal); vec4 w = modelMatrix*vec4(position,1.0); vW = w.xyz;
       gl_Position = projectionMatrix*viewMatrix*w; }`,
-  fragmentShader: `uniform vec3 uSun; uniform float uTime; varying vec3 vN; varying vec3 vW; varying vec3 vP; ${GLSL_NOISE}
+  fragmentShader: `uniform vec3 uSun; uniform sampler2D uMasks; varying vec3 vN; varying vec3 vW; varying vec2 vUv;
     void main(){
+      vec4 m = texture2D(uMasks, vUv);
       vec3 n = normalize(vN); vec3 v = normalize(cameraPosition - vW);
       float diff = dot(n, normalize(uSun));
-      vec3 p = normalize(vP);
-      float land = fbm(p*2.3);
-      float cont = smoothstep(0.47, 0.55, land);
-      vec3 base = mix(vec3(0.01,0.03,0.07), vec3(0.06,0.065,0.08), cont);
-      float clouds = smoothstep(0.55, 0.8, fbm(p*4.0 + vec3(uTime*0.01, 0.0, 0.0)));
+      vec3 base = mix(vec3(0.01,0.03,0.07), vec3(0.06,0.065,0.08), m.r);
       float day = smoothstep(-0.12, 0.4, diff);
-      vec3 col = base*(0.12 + 1.5*day) + vec3(0.5,0.6,0.7)*clouds*day*0.35;
-      float city = smoothstep(0.6, 0.76, fbm(p*13.0 + 3.1)) * cont;
-      float grid = smoothstep(0.5, 0.9, noise(p*95.0));
-      vec3 lights = mix(vec3(1.0,0.6,0.16), vec3(0.3,0.9,1.0), step(0.62, noise(p*6.0)));
-      col += lights * city * (0.4 + grid) * 2.4 * (1.0 - day) * (1.0 - clouds*0.7);
+      vec3 col = base*(0.12 + 1.5*day) + vec3(0.5,0.6,0.7)*m.b*day*0.35;
+      vec3 lights = mix(vec3(1.0,0.6,0.16), vec3(0.3,0.9,1.0), m.a);
+      col += lights * m.g * 2.4 * (1.0 - day) * (1.0 - m.b*0.7);
       float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);
       col += vec3(0.25,0.72,1.0) * fres * (0.2 + 0.9*smoothstep(-0.3, 0.4, diff));
       gl_FragColor = vec4(col, 1.0);
     }`
 });
-const planet = new THREE.Mesh(new THREE.SphereGeometry(110, 96, 64), planetMat);
+const planet = new THREE.Mesh(new THREE.SphereGeometry(110, 72, 48), planetMat);
 planet.position.copy(PLANET_POS);
 planet.rotation.z = 0.3;
 scene.add(planet);
@@ -2896,14 +2934,33 @@ window.addEventListener('pointerdown', (e) => {
 
 /* ---------- loop ---------- */
 const clock = new THREE.Clock();
+// qualidade adaptativa: mede o tempo médio de frame e reduz efeitos se a máquina estiver sofrendo
+const perf = { frames: 0, acc: 0, warm: 45, steps: 0 };
+function setQuality(q) {
+  quality = q;
+  if (q === 0) { renderer.setPixelRatio(0.75); composer.setPixelRatio(0.75); onResize(); }
+  document.documentElement.dataset.q = q;
+  console.info('[Órion] qualidade 3D:', ['leve', 'média', 'completa'][q]);
+}
+function measure(raw) {
+  if (perf.steps >= 2 || quality === 0 || document.hidden) return;
+  if (perf.warm > 0) { perf.warm--; return; }
+  perf.acc += raw; perf.frames++;
+  if (perf.frames >= 90) {
+    const avg = perf.acc / perf.frames;
+    perf.acc = 0; perf.frames = 0;
+    if (avg > 1 / 38) { setQuality(quality - 1); perf.steps++; perf.warm = 30; }
+    else perf.steps = 2; // está rodando bem: para de medir
+  }
+}
 function frame() {
   requestAnimationFrame(frame);
-  const dt = Math.min(clock.getDelta(), 0.05);
+  const raw = clock.getDelta();
+  const dt = Math.min(raw, 0.05);
   const t = clock.elapsedTime;
+  measure(raw);
   tickers.forEach((f) => f(dt, t));
-  nebulaMat.uniforms.uTime.value = t;
   stars.material.uniforms.uTime.value = t;
-  planetMat.uniforms.uTime.value = t;
   planet.rotation.y += dt * 0.004;
   ring.rotation.z += dt * 0.07;
   ring2.rotation.z -= dt * 0.12;
@@ -2918,7 +2975,7 @@ function frame() {
   applyCamera(t);
   camera.updateMatrixWorld();
   updateReticle();
-  composer.render();
+  if (quality >= 2) composer.render(); else renderer.render(scene, camera);
 }
 
 function onResize() {
@@ -2945,6 +3002,9 @@ window.Orion3D = {
   supernova
 };
 cam.pos.set(...SHOTS.title.pos); cam.target.set(...SHOTS.title.target);
+// compila os shaders de tudo antes do primeiro uso, para evitar travadas quando um objeto aparece
+cargo.visible = true; renderer.compile(scene, camera); cargo.visible = false;
+if (LITE) setQuality(0);
 frame();
 window.dispatchEvent(new Event('orion3d-ready'));
 
