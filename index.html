@@ -2834,7 +2834,7 @@ function nebulaTexture() {
 }
 function startNovaHint() {
   if (novaHint) return; novaHint = true;
-  const s = starSprites.Betelgeuse, base = s.scale.x, c0 = s.material.color.clone();
+  const s = starSprites.Betelgeuse, base = s.scale.x, c0 = HDR(2.2, 0.55, 0.4);
   tickers.add(function hint(dt, t) {
     if (novaBusy || novaDone) { tickers.delete(hint); return; }
     const k = 1 + Math.max(0, Math.sin(t * 2.2)) * 0.35;
