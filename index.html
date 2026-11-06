@@ -2833,14 +2833,22 @@ function nebulaTexture() {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 function startNovaHint() {
-  if (novaHint) return; novaHint = true;
-  const s = starSprites.Betelgeuse, base = s.scale.x, c0 = HDR(2.9, 0.55, 0.4);
-  tickers.add(function hint(dt, t) {
-    if (novaBusy || novaDone) { tickers.delete(hint); return; }
-    const k = 1 + Math.max(0, Math.sin(t * 2.2)) * 0.35;
-    s.scale.set(base * k, base * k, 1);
-    s.material.color.copy(c0).multiplyScalar(0.9 + (k - 1) * 1.4);
-  });
+if (novaHint) return; novaHint = true;
+const s = starSprites.Betelgeuse, base = s.scale.x;
+// halo vermelho com cor abaixo de 1: assim o tone mapping não "estoura" o vermelho em branco
+const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX_GLOW, color: HDR(1.0, 0.1, 0.06), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+halo.position.copy(s.position);
+constel.add(halo);
+s.material.color.setRGB(1.4, 0.35, 0.25);
+let fade = 0;
+tickers.add(function hint(dt, t) {
+if (novaBusy || novaDone) { constel.remove(halo); halo.material.dispose(); tickers.delete(hint); return; }
+fade = Math.min(1, fade + dt * 0.5);
+const k = Math.max(0, Math.sin(t * 2.2));
+halo.material.opacity = fade * (0.5 + k * 0.5);
+halo.scale.set(base * (2.6 + k * 0.8), base * (2.6 + k * 0.8), 1);
+s.scale.set(base * (1 + k * 0.25), base * (1 + k * 0.25), 1);
+});
 }
 async function supernova() {
   if (novaDone || novaBusy) return false;
