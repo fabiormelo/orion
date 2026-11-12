@@ -8,7 +8,7 @@
 <meta property="og:title" content="Estação Órion · Posto de Vigilância de IA">
 <meta property="og:description" content="Três setores, três regras de ouro. Proteja os dados e acenda as Três Marias.">
 <meta name="theme-color" content="#04060c">
-<meta name="orion-version" content="v6">
+<meta name="orion-version" content="v7">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2304060c'/%3E%3Cg fill='%23ffc63d'%3E%3Cpath d='M14 40l6-6 6 6-6 6z'/%3E%3Cpath d='M26 32l6-6 6 6-6 6z'/%3E%3Cpath d='M38 24l6-6 6 6-6 6z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -399,6 +399,25 @@ p + p{margin-top:10px}
 .nerd-foot{margin-top:26px;font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.08em;line-height:1.7}
 @media (max-width:1100px){.nerd-grid,.nerd-grid.three{grid-template-columns:1fr}.nerd-stats{grid-template-columns:repeat(2,1fr)}.timeline{grid-template-columns:1fr 1fr}}
 
+/* ---------- ranking e aviso de telemetria ---------- */
+.tele-note{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#8fa0c6;margin-top:8px;max-width:560px;line-height:1.5;text-shadow:0 1px 2px rgba(0,0,0,.9)}
+.rank-box{width:min(720px,92vw)}
+.rank-me{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px;padding:14px 16px;border:1px solid rgba(255,198,61,.35);background:rgba(255,198,61,.05)}
+.rank-me b{display:block;font-size:20px;margin-top:4px}
+.rank-me small{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.rank-note{font-size:12.5px;color:var(--dim);margin-top:8px}
+.rank-status{font-family:var(--mono);font-size:12.5px;color:var(--green);margin-top:8px;min-height:18px}
+.rank-status b{color:var(--amber)}
+.rank-list{margin-top:14px}
+.rank-list table{width:100%;border-collapse:collapse;font-size:14px}
+.rank-list th{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line2)}
+.rank-list td{padding:9px 10px;border-bottom:1px solid var(--line)}
+.rank-list td:first-child{font-family:var(--mono);color:var(--amber);width:60px}
+.rank-list td:nth-child(3),.rank-list td:nth-child(4){font-family:var(--mono);font-size:13px}
+.rank-list tr.me td{background:rgba(255,198,61,.1);color:#fff}
+.rank-list tr.gap td{text-align:center;color:var(--faint);border:0}
+.rank-nums{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--faint);margin-top:12px}
+
 </style>
 <script type="importmap">
 { "imports": {
@@ -454,13 +473,13 @@ p + p{margin-top:10px}
     <button class="btn modal-close" data-close="#modal-nerd">Fechar ✕</button>
     <div class="eyebrow">&lt;/&gt; Log técnico da estação</div>
     <h2>Informações para nerds</h2>
-    <p class="lead">Como a Estação Órion foi construída: da especificação ao último shader. Um arquivo HTML, nenhum servidor, nenhuma imagem ou áudio pronto. Tudo que você vê e ouve é gerado por código no seu navegador.</p>
+    <p class="lead">Como a Estação Órion foi construída: da especificação ao último shader. Um arquivo HTML, nenhuma imagem ou áudio pronto. Tudo que você vê e ouve é gerado por código no seu navegador; só a telemetria e o ranking passam por um pequeno backend.</p>
 
     <div class="nerd-stats">
       <div><b>1</b><span>arquivo HTML</span></div>
-      <div><b>~2.800</b><span>linhas de código</span></div>
+      <div><b>~2.900</b><span>linhas de código</span></div>
       <div><b>0</b><span>imagens e áudios</span></div>
-      <div><b>0</b><span>servidores</span></div>
+      <div><b>1</b><span>backend em Apps Script</span></div>
       <div><b>4</b><span>shaders GLSL próprios</span></div>
     </div>
 
@@ -491,7 +510,7 @@ p + p{margin-top:10px}
 
     <section class="nerd-sec">
       <h3><i>02</i> Arquitetura</h3>
-      <div class="nerd-grid three">
+      <div class="nerd-grid">
         <div class="nerd-card"><h4>Conteúdo</h4><ul>
           <li><code>ORION_DATA</code>: textos, naves, fragmentos, gabarito e casos reais</li>
           <li><code>ORION_CONFIG</code>: link do webinar e da Rádio</li></ul></div>
@@ -503,6 +522,10 @@ p + p{margin-top:10px}
           <li>Three.js r160 carregado por <code>importmap</code> direto da CDN</li>
           <li>Progressive enhancement: se o WebGL falhar, o jogo segue com fundo estático</li>
           <li>Comunicação por uma API pequena: <code>shot()</code>, <code>shipScan()</code>, <code>lightStar()</code>...</li></ul></div>
+        <div class="nerd-card"><h4>Telemetria e ranking</h4><ul>
+          <li>Backend em Google Apps Script publicado como App da Web, gravando numa Planilha Google</li>
+          <li>Eventos enviados com <code>fetch</code> em modo <code>no-cors</code>: o jogo nunca espera nem trava por causa deles</li>
+          <li>Ranking só aceita turnos com início e fim registrados pela mesma sessão, com tempo compatível</li></ul></div>
       </div>
     </section>
 
@@ -532,9 +555,10 @@ p + p{margin-top:10px}
           <li>Três níveis de intensidade que reagem ao jogo; reverb por convolução com impulso gerado de ruído</li>
           <li>Mixagem validada renderizando a trilha offline (<code>OfflineAudioContext</code>) e medindo picos: zero amostras estouradas</li></ul></div>
         <div class="nerd-card"><h4>Privacy by design</h4><ul>
-          <li>Todos os nomes, CPFs e empresas são fictícios</li>
-          <li>Sem cookies, sem analytics, sem backend</li>
-          <li>O único dado salvo é o seu nome de Guardião, no <code>localStorage</code> do seu navegador</li>
+          <li>Todos os nomes, CPFs e empresas do jogo são fictícios</li>
+          <li>Sem cookies e sem analytics de terceiros</li>
+          <li>Telemetria anônima: um identificador aleatório gerado no seu navegador, sem nome nem e-mail</li>
+          <li>Ranking opcional: seu nome só sai do navegador se você clicar em publicar</li>
           <li>O YouTube só carrega se você abrir a Rádio</li></ul></div>
         <div class="nerd-card"><h4>Testes</h4><ul>
           <li>Turno completo automatizado no Chrome headless com Playwright, com e sem 3D</li>
@@ -544,14 +568,31 @@ p + p{margin-top:10px}
     </section>
 
     <section class="nerd-sec">
-      <h3><i>05</i> Linha do tempo</h3>
+      <h3><i>05</i> O cinturão de Órion</h3>
+      <div class="nerd-grid">
+        <div class="nerd-card"><h4>Fiel ao céu, até onde dá</h4><ul>
+          <li>As 8 estrelas principais de Órion estão nas posições relativas aproximadas do céu real, com brilho proporcional à magnitude</li>
+          <li>Cores de verdade: Betelgeuse avermelhada (supergigante vermelha), Rigel azulada (supergigante azul) e o cinturão branco-azulado, de estrelas muito quentes dos tipos O e B</li>
+          <li>As Três Marias aparecem quase igualmente espaçadas numa linha de cerca de 2,3° no céu</li>
+          <li>A constelação está como é vista do hemisfério norte. Daqui do Brasil, Órion aparece de cabeça para baixo</li></ul></div>
+        <div class="nerd-card"><h4>As Três Marias</h4><ul>
+          <li><b>Alnitak</b> (ζ Ori), ponta leste: sistema triplo, com a estrela do tipo O mais brilhante do céu noturno</li>
+          <li><b>Alnilam</b> (ε Ori), centro: supergigante azul e a mais brilhante do cinturão. É a única estrela simples das três</li>
+          <li><b>Mintaka</b> (δ Ori), ponta oeste: sistema múltiplo, praticamente sobre o equador celeste. Nasce quase exatamente no leste</li>
+          <li>Parecem vizinhas, mas não são: Alnitak e Mintaka estão a cerca de 1.200 anos-luz, e Alnilam provavelmente bem mais longe, entre 1.300 e 2.000. O alinhamento é perspectiva</li>
+          <li>Os nomes vêm do árabe: Alnitak e Mintaka remetem a "cinturão"; Alnilam, a "colar de pérolas"</li></ul></div>
+      </div>
+    </section>
+
+    <section class="nerd-sec">
+      <h3><i>06</i> Linha do tempo</h3>
       <div class="timeline">
         <div><b>Ideação</b><span>Brainstorm de conceito, nome e estética</span></div>
         <div><b>Spec</b><span>Regras, conceitos, cenários e critérios de aceite</span></div>
         <div><b>v1</b><span>Três setores, 3D, trilha, Arquivo e card</span></div>
         <div><b>Teste real</b><span>Feedback de contraste e legibilidade</span></div>
         <div><b>v2</b><span>Mira de caça, câmera nova e mais contraste</span></div>
-        <div><b>v3 a v6</b><span>Vocabulário, este log, mixagem sem distorção e 3D mais leve</span></div>
+        <div><b>v3 a v7</b><span>Vocabulário, este log, som limpo, 3D mais leve, telemetria e ranking</span></div>
       </div>
     </section>
 
@@ -560,6 +601,16 @@ p + p{margin-top:10px}
   </div>
 </div>
 
+
+<div class="modal hidden" id="modal-ranking" role="dialog" aria-modal="true" aria-label="Ranking dos Guardiões">
+  <div class="modal-box rank-box">
+    <button class="btn modal-close" data-close="#modal-ranking">Fechar ✕</button>
+    <div class="eyebrow">Placar da estação</div>
+    <h2>Ranking dos Guardiões</h2>
+    <p class="dim">Maior integridade primeiro. No empate, quem terminou o turno mais rápido.</p>
+    <div id="rank-body"></div>
+  </div>
+</div>
 
 <noscript><p style="position:fixed;inset:40% 0 auto;text-align:center">Ative o JavaScript para entrar na Estação Órion.</p></noscript>
 
@@ -573,6 +624,8 @@ window.ORION_CONFIG = {
   // Rádio da Estação (easter egg). Cole aqui o ID do vídeo oficial de "Orion" no YouTube,
   // que é o trecho depois de "watch?v=" na URL. Vazio = abre a busca do YouTube em nova aba.
   orionYoutubeId: 'uPfmlpiBEk8',
+  // Telemetria e ranking: URL /exec do App da Web do Apps Script (backend/Codigo.gs). Vazio = desligado.
+  telemetryUrl: 'https://script.google.com/a/macros/totvs.com.br/s/AKfycbwqlWn-t9FfJxx4E8G8RUSw_RbKXO4ElkCpoE9BhR_HU72M-pKRQOD8V9eKtJdcHmD8/exec',
   orionSearchUrl: 'https://youtu.be/uPfmlpiBEk8',
   programa: 'Programa JEDAI · Missão IA Responsável'
 };
@@ -1198,9 +1251,29 @@ window.ORION_DATA = {
 
   const S = {
     name: '', integrity: 100, unlocked: new Set(), lit: [false, false, false],
-    shot: 'title', paused: false, onShipClick: null, keyHandler: null, phase: 'title'
+    shot: 'title', paused: false, onShipClick: null, keyHandler: null, phase: 'title',
+    t0: 0, pausedMs: 0, pausedAt: 0, tempo: 0, published: false
   };
   const G = (window.OrionGame = { state: S });
+
+  /* ---------- telemetria anônima e ranking ---------- */
+  const rid = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  let VID = '';
+  try { VID = localStorage.getItem('orion-vid') || ''; if (!VID) { VID = rid(); localStorage.setItem('orion-vid', VID); } } catch (e) { VID = rid(); }
+  const SID = rid();
+  const VER = (document.querySelector('meta[name="orion-version"]') || {}).content || '';
+  const TEL = (C.telemetryUrl || '').trim();
+  const sentOnce = new Set();
+  function track(t, extra, onceKey) {
+    if (!TEL) return;
+    if (onceKey) { if (sentOnce.has(onceKey)) return; sentOnce.add(onceKey); }
+    try {
+      fetch(TEL, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({ t, v: VID, s: SID, ver: VER }, extra || {})) }).catch(() => {});
+    } catch (e) { /* telemetria nunca derruba o jogo */ }
+  }
+  const fmtTempo = (sec) => { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + 'min ' + String(sec % 60).padStart(2, '0') + 's'; };
+  function elapsed() { return (performance.now() - S.t0 - S.pausedMs - (S.pausedAt ? performance.now() - S.pausedAt : 0)) / 1000; }
 
   /* ---------- pontes com 3D e áudio ---------- */
   function fx(name, ...a) {
@@ -1319,7 +1392,8 @@ window.ORION_DATA = {
           <input id="cs-name" maxlength="28" placeholder="Seu nome de Guardião" aria-label="Seu nome">
           <button class="btn btn-primary" type="submit">Iniciar turno ▸</button>
         </form>
-        <div class="sound-hint">◉ Melhor com som ligado · experiência para desktop · ~8 minutos</div>
+        <div class="sound-hint">◉ Melhor com som ligado · experiência para desktop · ~10 minutos</div>
+        ${TEL ? '<div class="tele-note">Contamos acessos e turnos concluídos de forma anônima. Seu nome só aparece no ranking se você decidir publicar.</div>' : ''}
         <div class="coords">DESTINO › CINTURÃO DE ÓRION · -23.50855897883607, -46.65146936153304</div>
       </section>`;
     const input = $('#cs-name');
@@ -1334,6 +1408,8 @@ window.ORION_DATA = {
     if (window.OrionAudio) { OrionAudio.init(); OrionAudio.start(); OrionAudio.setLevel(0); }
     sfx('warp');
     hud(true); updateHud();
+    S.t0 = performance.now(); S.pausedMs = 0; S.pausedAt = 0;
+    track('start');
     await briefing();
     await act1();
     await act2();
@@ -1353,7 +1429,7 @@ window.ORION_DATA = {
     await sleep(500);
     const norm = S.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
     const egg = (D.nameEggs || []).find((e) => e.match.includes(norm));
-    if (egg) toast('Easter egg encontrado', 'Identidade lendária detectada');
+    if (egg) { toast('Easter egg encontrado', 'Identidade lendária detectada'); track('egg', { d: 'nome' }, 'egg-nome'); }
     await typewriter($('#term', el), [
       { text: `Identidade confirmada: ${S.name}. Bem-vindo à Estação Órion.` },
       ...(egg ? [{ who: 'MESTRE-JEDAI › [!]', text: egg.text, cls: 'egg-line' }] : []),
@@ -1381,6 +1457,7 @@ window.ORION_DATA = {
   }
 
   async function sectorDone(i) {
+    track('sector', { d: String(i + 1) });
     S.lit[i] = true; updateHud();
     fx('lightStar', i); sfx('star');
     stage().innerHTML = `<div class="sector-done"><div class="big">Setor ${D.acts[i].roman} protegido</div>
@@ -1773,6 +1850,8 @@ window.ORION_DATA = {
   function rank() { return D.ranks.find((r) => S.integrity >= r.min); }
 
   async function finale() {
+    S.tempo = Math.round(elapsed());
+    track('finish', { i: Math.round(S.integrity), tm: S.tempo, d: String(S.unlocked.size) });
     S.phase = 'final';
     setKeys(null);
     stage().innerHTML = '';
@@ -1794,6 +1873,7 @@ window.ORION_DATA = {
           <div class="stats">
             <div class="stat"><span>Integridade</span><b>${Math.round(S.integrity)}%</b></div>
             <div class="stat"><span>Arquivo</span><b>${S.unlocked.size}/9</b></div>
+            <div class="stat"><span>Tempo</span><b>${fmtTempo(S.tempo)}</b></div>
           </div>
           <div class="scroll-hint">▼ role para o Juramento do Guardião</div>
         </div>
@@ -1814,6 +1894,7 @@ window.ORION_DATA = {
           <a class="btn btn-primary" href="${esc(C.webinarUrl)}" target="_blank" rel="noopener">Assistir à gravação do webinar ▸</a>
           <button class="btn btn-amber" id="card">Baixar meu card de Guardião</button>
           <button class="btn" id="arch">Abrir o Arquivo da Estação</button>
+          <button class="btn" id="rank">Ranking</button>
           <button class="btn" id="again">Jogar de novo</button>
         </div>
         <div class="final-foot"><span>${esc(C.programa)} · Webinar "Inovação com Responsabilidade"</span>
@@ -1822,6 +1903,7 @@ window.ORION_DATA = {
     $('#card', st).addEventListener('click', downloadCard);
     $('#arch', st).addEventListener('click', openArchive);
     $('#again', st).addEventListener('click', () => location.reload());
+    $('#rank', st).addEventListener('click', openRanking);
     $('#nerd-link', st).addEventListener('click', openNerd);
     // easter egg: clique na estrela vermelha (Betelgeuse) no céu da tela final
     const fin = $('.final', st);
@@ -1831,7 +1913,7 @@ window.ORION_DATA = {
       fin.style.cursor = '';
       sfx('novaCharge'); setTimeout(() => sfx('novaBoom'), 1950);
       const ok = await fx('supernova');
-      if (ok) toast('Easter egg · supernova', D.betelgeuse, 11000);
+      if (ok) { toast('Easter egg · supernova', D.betelgeuse, 11000); track('egg', { d: 'supernova' }, 'egg-supernova'); }
     });
   }
 
@@ -1915,7 +1997,61 @@ window.ORION_DATA = {
   /* =========================================================
      ARQUIVO E RÁDIO
      ========================================================= */
-  function pause(on) { S.paused = on; fx('pause', on); }
+  function pause(on) {
+    S.paused = on; fx('pause', on);
+    const now = performance.now();
+    if (on && !S.pausedAt && S.t0) S.pausedAt = now;
+    if (!on && S.pausedAt) { S.pausedMs += now - S.pausedAt; S.pausedAt = 0; }
+  }
+
+  /* ---------- ranking ---------- */
+  function openRanking() {
+    sfx('blip'); pause(true);
+    const body = $('#rank-body');
+    const can = TEL && S.phase === 'final';
+    body.innerHTML = `
+      <div class="rank-me">
+        <div><span class="eyebrow">Seu turno</span><b>${esc(S.name)}</b><small>${Math.round(S.integrity)}% de integridade · ${fmtTempo(S.tempo)}</small></div>
+        ${can ? `<button class="btn btn-amber" id="pub" ${S.published ? 'disabled' : ''}>${S.published ? 'Publicado' : 'Publicar no ranking'}</button>` : ''}
+      </div>
+      ${can ? '<p class="rank-note">Ao publicar, aparecem só o seu nome de Guardião, a integridade e o tempo. Nada de e-mail ou outro dado.</p>' : ''}
+      <div id="rank-status" class="rank-status"></div>
+      <div id="rank-list" class="rank-list">${TEL ? '<p class="dim">Sintonizando o placar da estação...</p>' : '<p class="dim">Ranking indisponível nesta versão da estação.</p>'}</div>
+      <div id="rank-nums" class="rank-nums"></div>`;
+    $('#modal-ranking').classList.remove('hidden');
+    const pub = $('#pub', body);
+    if (pub) pub.addEventListener('click', async () => {
+      pub.disabled = true; pub.textContent = 'Publicando...'; sfx('transmit');
+      S.published = true;
+      track('rank', { n: S.name, a: S.unlocked.size });
+      await sleep(2600);
+      const j = await loadRanking();
+      pub.textContent = 'Publicado';
+      $('#rank-status').innerHTML = j && j.voce
+        ? `Você está em <b>#${j.voce.pos}</b> de ${j.total} guardiões.`
+        : 'Publicação enviada. Se não aparecer em alguns segundos, reabra o ranking. Turnos com menos de 2min30s não entram.';
+    });
+    if (TEL) loadRanking();
+  }
+  async function loadRanking() {
+    const list = $('#rank-list');
+    try {
+      const r = await fetch(TEL + '?s=' + encodeURIComponent(SID));
+      const j = await r.json();
+      const row = (x) => `<tr class="${x.voce ? 'me' : ''}"><td>#${x.pos}</td><td>${esc(x.nome)}</td><td>${x.integridade}%</td><td>${fmtTempo(x.tempo)}</td></tr>`;
+      const rows = (j.ranking || []).map(row).join('');
+      const extra = j.voce && j.voce.pos > (j.ranking || []).length ? `<tr class="gap"><td colspan="4">···</td></tr>${row(j.voce)}` : '';
+      list.innerHTML = rows
+        ? `<table><thead><tr><th>Pos.</th><th>Guardião</th><th>Integridade</th><th>Tempo</th></tr></thead><tbody>${rows}${extra}</tbody></table>`
+        : '<p class="dim">Ninguém publicou ainda. A primeira posição está livre.</p>';
+      const n = j.numeros || {};
+      $('#rank-nums').textContent = n.visitantes ? `${n.visitantes} visitantes · ${n.iniciados} turnos iniciados · ${n.concluidos} turnos concluídos` : '';
+      return j;
+    } catch (e) {
+      list.innerHTML = '<p class="dim">Não foi possível sintonizar o ranking agora. Tente de novo em instantes.</p>';
+      return null;
+    }
+  }
   function openArchive() {
     sfx('blip'); pause(true);
     const m = $('#modal-archive');
@@ -1933,6 +2069,7 @@ window.ORION_DATA = {
   }
   function openNerd() {
     if (!$('#modal-nerd').classList.contains('hidden')) return;
+    track('egg', { d: 'nerd' }, 'egg-nerd');
     sfx('contact'); pause(true);
     const m = $('#modal-nerd');
     m.classList.remove('hidden');
@@ -1941,6 +2078,7 @@ window.ORION_DATA = {
   G.openNerd = openNerd;
   function openRadio() {
     if (!$('#modal-radio').classList.contains('hidden')) return;
+    track('egg', { d: 'radio' }, 'egg-radio');
     sfx('contact'); pause(true);
     if (window.OrionAudio) OrionAudio.duck(true);
     const local = location.protocol === 'file:'; // sem referer o YouTube recusa o player (erro 153)
@@ -1967,7 +2105,7 @@ window.ORION_DATA = {
     let buf = '', konami = '';
     const KONAMI = 'arrowup|arrowup|arrowdown|arrowdown|arrowleft|arrowright|arrowleft|arrowright|b|a';
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { ['#modal-archive', '#modal-radio', '#modal-nerd'].forEach((id) => { if (!$(id).classList.contains('hidden')) closeModal(id); }); return; }
+      if (e.key === 'Escape') { ['#modal-archive', '#modal-radio', '#modal-nerd', '#modal-ranking'].forEach((id) => { if (!$(id).classList.contains('hidden')) closeModal(id); }); return; }
       if (e.target.tagName === 'INPUT') return;
       konami = (konami + '|' + e.key.toLowerCase()).split('|').slice(-10).join('|');
       if (konami === KONAMI) { konami = ''; openNerd(); return; }
@@ -1980,6 +2118,7 @@ window.ORION_DATA = {
     // A tela inicial já é "Órion": clicar no título também sintoniza a rádio (segredo)
     document.addEventListener('dblclick', (e) => { if (e.target.closest && e.target.closest('.title-screen h1')) openRadio(); });
     updateHud();
+    track('visit');
     renderTitle();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
@@ -2833,23 +2972,24 @@ function nebulaTexture() {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 function startNovaHint() {
-if (novaHint) return; novaHint = true;
-const s = starSprites.Betelgeuse, base = s.scale.x;
-// halo vermelho com cor abaixo de 1: assim o tone mapping não "estoura" o vermelho em branco
-const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX_GLOW, color: HDR(1.0, 0.1, 0.06), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
-halo.position.copy(s.position);
-constel.add(halo);
-s.material.color.setRGB(1.4, 0.35, 0.25);
-let fade = 0;
-tickers.add(function hint(dt, t) {
-if (novaBusy || novaDone) { constel.remove(halo); halo.material.dispose(); tickers.delete(hint); return; }
-fade = Math.min(1, fade + dt * 0.5);
-const k = Math.max(0, Math.sin(t * 2.2));
-halo.material.opacity = fade * (0.5 + k * 0.5);
-halo.scale.set(base * (2.6 + k * 0.8), base * (2.6 + k * 0.8), 1);
-s.scale.set(base * (1 + k * 0.25), base * (1 + k * 0.25), 1);
-});
+  if (novaHint) return; novaHint = true;
+  const s = starSprites.Betelgeuse, base = s.scale.x;
+  // halo vermelho com cor abaixo de 1: assim o tone mapping não "estoura" o vermelho em branco
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX_GLOW, color: HDR(1.0, 0.1, 0.06), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+  halo.position.copy(s.position);
+  constel.add(halo);
+  s.material.color.setRGB(1.4, 0.35, 0.25);
+  let fade = 0;
+  tickers.add(function hint(dt, t) {
+    if (novaBusy || novaDone) { constel.remove(halo); halo.material.dispose(); tickers.delete(hint); return; }
+    fade = Math.min(1, fade + dt * 0.5);
+    const k = Math.max(0, Math.sin(t * 2.2));
+    halo.material.opacity = fade * (0.5 + k * 0.5);
+    halo.scale.set(base * (2.6 + k * 0.8), base * (2.6 + k * 0.8), 1);
+    s.scale.set(base * (1 + k * 0.25), base * (1 + k * 0.25), 1);
+  });
 }
+
 async function supernova() {
   if (novaDone || novaBusy) return false;
   novaBusy = true;
